@@ -15,4 +15,4 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     role = relationship("Role")
 
-    users = relationship("User", back_populates="role")
+    users = relationship("Role", back_populates="users")

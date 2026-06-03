@@ -1,5 +1,6 @@
 from app.core.security import hash_password, verify_password
 from app.models.users import User
+from app.core.jwt import create_access_token
 
 def register_user(db, username, email, password, role_id):
     user = User(
@@ -24,4 +25,11 @@ def authenticate_user(db, username, password):
     if not verify_password(password, user.password_hash):
         return None
     
-    return user
+    token = create_access_token(
+        data={"sub": user.username, "role_id": user.role_id}
+    )
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }

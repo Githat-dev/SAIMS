@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.core.database import Base, engine
 from app.models import Role, User, Category, Product, StockMovement
-from app.routes import auth, users, roles, products
+from app.routes import auth, users, roles, products, stock_movements, inventory
 
 Base.metadata.create_all(bind=engine)
 
@@ -11,6 +11,8 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(roles.router)
 app.include_router(products.router)
+app.include_router(stock_movements.router)
+app.include_router(inventory.router)
 
 @app.get("/")
 def root():

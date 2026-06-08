@@ -16,6 +16,8 @@ class Product(Base):
 
     quantity = Column(Integer, default=0)
 
+    low_stock_threshold = Column(Integer, default=10)
+
     category_id = Column(Integer, ForeignKey("categories.id"))
 
     created_at = Column(DateTime, default=func.now())

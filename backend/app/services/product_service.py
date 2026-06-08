@@ -7,6 +7,7 @@ def create_product(db, product_data):
         sku=product_data.sku,
         price=product_data.price,
         quantity=product_data.quantity,
+        low_stock_threshold=product_data.low_stock_threshold,
         category_id=product_data.category_id
     )
 
@@ -32,6 +33,7 @@ def update_product(db, product_id, product_data):
     product.sku = product_data.sku
     product.price = product_data.price
     product.quantity = product_data.quantity
+    product.low_stock_threshold = product_data.low_stock_threshold
     product.category_id = product_data.category_id
 
     db.commit()

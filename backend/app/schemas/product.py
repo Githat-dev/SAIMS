@@ -5,6 +5,7 @@ class ProductCreate(BaseModel):
     sku: str
     price: float
     quantity: int
+    low_stock_threshold: int
     category_id: int
 
 class ProductResponse(BaseModel):
@@ -13,6 +14,7 @@ class ProductResponse(BaseModel):
     sku: str
     price: float
     quantity: int
+    low_stock_threshold: int
     category_id: int
 
     class Config:

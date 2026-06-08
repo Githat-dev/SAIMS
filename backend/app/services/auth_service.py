@@ -24,10 +24,15 @@ def authenticate_user(db, username, password):
     
     if not verify_password(password, user.password_hash):
         return None
+
+    print("USER:", user.username)
+    print("ROLE:", user.role_id)
     
     token = create_access_token(
         data={"sub": user.username, "role_id": user.role_id}
     )
+
+    print ("TOKEN:", token)
 
     return {
         "access_token": token,

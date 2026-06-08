@@ -1,0 +1,54 @@
+from app.models.product import Product
+
+def create_product(db, product_data):
+
+    product = Product(
+        name=product_data.name,
+        sku=product_data.sku,
+        price=product_data.price,
+        quantity=product_data.quantity,
+        category_id=product_data.category_id
+    )
+
+    db.add(product)
+    db.commit()
+    db.refresh(product)
+
+    return product
+
+def get_products(db):
+    return db.query(Product).all()
+
+def update_product(db, product_id, product_data):
+    
+    product = db.query(Product).filter(
+        Product.id == product_id
+    ).first()
+
+    if not product:
+        return None
+    
+    product.name = product_data.name
+    product.sku = product_data.sku
+    product.price = product_data.price
+    product.quantity = product_data.quantity
+    product.category_id = product_data.category_id
+
+    db.commit()
+    db.refresh(product)
+
+    return product
+
+def delete_product(db , product_id):
+
+    product = db.query(Product).filter(
+        Product.id == product_id
+    ).first()
+
+    if not product:
+        return None
+    
+    db.delete(product)
+    db.commit()
+
+    return {"message": "Product deleted"}

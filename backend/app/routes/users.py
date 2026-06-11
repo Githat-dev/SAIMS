@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
 from app.core.deps import get_current_user
 from app.core.rbac import require_role
-from app.services.user_service import get_all_users, get_user_by_id
+from app.services.user_service import (
+    get_all_users, 
+    get_user_by_id
+    )
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

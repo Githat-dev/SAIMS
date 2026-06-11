@@ -70,13 +70,14 @@ def search_products(
 @router.get("/report")
 def inventory_report(db: Session = Depends(get_db)):
 
-    products = db.query(product).all()
+    products = db.query(Product).all()
 
     report = []
 
     for product in products:
 
         report.append({
+
             "id": product.id,
             "name": product.name,
             "sku": product.sku,

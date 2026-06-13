@@ -1,0 +1,24 @@
+from pydantic import BaseModel
+from typing import Optional
+
+class UserCreate(BaseModel):
+    username: str
+    email: str
+    password_hash: str
+    role_id: int
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    role_id: Optional[int] = None
+    is_active: Optional[bool] = None
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    role_id: int
+    is_active: bool
+
+    class Config:
+        from_attributes = True

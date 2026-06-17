@@ -7,6 +7,7 @@ from app.services.report_service import (
     get_stock_movement_report,
     get_user_report
     )
+from app.services.report_service import get_audit_report
 
 router = APIRouter(
     prefix="/reports",
@@ -36,3 +37,9 @@ def user_report(
     db: Session = Depends(get_db)
 ):
     return get_user_report(db)
+
+@router.get("/audit")
+def audit_report(
+    db: Session = Depends(get_db)
+):
+    return get_audit_report(db)

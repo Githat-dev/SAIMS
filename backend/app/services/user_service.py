@@ -1,4 +1,5 @@
 from app.models.users import User
+from app.services.audit_service import create_audit_log
 
 def get_all_users(db):
     users = db.query(User).all()
@@ -40,6 +41,12 @@ def create_user(db, user_data):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    create_audit_log(
+        db,
+        user.id,
+        f"Created user: {user.username}"
+    )
 
     return {
         "id": user.id,

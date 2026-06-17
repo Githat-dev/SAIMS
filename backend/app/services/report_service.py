@@ -2,6 +2,7 @@ from app.models.sale import Sale
 from app.models.product import Product
 from app.models.stock_movement import StockMovement
 from app.models.users import User
+from app.models.audit_log import AuditLog
 
 def get_sales_report(db):
 
@@ -68,5 +69,22 @@ def get_user_report(db):
                 "is_active": user.is_active
             }
             for user in users
+        ]
+    }
+
+def get_audit_report(db):
+
+    logs = db.query(AuditLog).all()
+
+    return {
+        "total_logs": len(logs),
+        "logs": [
+            {
+                "id": log.id,
+                "user_id": log.user_id,
+                "action":log.action,
+                "created_at": log.created_at
+            }
+            for log in logs
         ]
     }

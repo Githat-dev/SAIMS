@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.core.database import Base, engine
 from app.models import Role, User, Category, Product, StockMovement, Sale, SaleItem
+from app.models.audit_log import AuditLog
+from app.models.notifications import Notification
 from app.routes import auth, users, roles, products, stock_movements, inventory, sales, dashboard, reports
 
 Base.metadata.create_all(bind=engine)

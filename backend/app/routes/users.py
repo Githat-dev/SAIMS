@@ -18,17 +18,24 @@ from app.schemas.user import (
 router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/")
-def list_users(db: Session = Depends(get_db)):
+def list_users(
+        db: Session = Depends(get_db), 
+        current_user = Depends(require_role(1,2))
+):
     return get_all_users(db)
 
 @router.get("/{user_id}")
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(
+        user_id: int, db: Session = Depends(get_db),
+        current_user = Depends(require_role(1,2))
+):
     return get_user_by_id(db, user_id)
 
-@router.post("/{user_id}")
+@router.post("/")
 def create_new_user(
         user: UserCreate,
-        db: Session =Depends(get_db)
+        db: Session = Depends(get_db),
+        current_user = Depends(require_role(1))
 ):
     return create_user(db, user)
 
@@ -36,13 +43,15 @@ def create_new_user(
 def update_existing_user(
     user_id: int,
     user: UserUpdate,
-    db: Session =Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2))
 ):
     return update_user(db, user_id, user)
 
 @router.delete("/{user_id}")
 def remove_user(
     user_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1))
 ):
     return delete_user(db, user_id)

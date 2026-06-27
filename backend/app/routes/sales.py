@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
+from app.core.rbac import require_role
 from app.schemas.sale import (
     SaleCreate
     )
@@ -18,7 +19,8 @@ router = APIRouter(
 @router.post("/")
 def create_sale_route(
     sale: SaleCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2,4,5))
 ):
     return create_sale(
         db,
@@ -27,12 +29,16 @@ def create_sale_route(
 
 @router.get("/")
 def list_sales(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2,3,4))
 ):
     return get_sales(db)
 
 @router.get("/summary")
-def sales_summary(db: Session = Depends(get_db)):
+def sales_summary(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2))    
+):
 
     sales = get_sales(db)
 
@@ -58,7 +64,8 @@ def sales_summary(db: Session = Depends(get_db)):
 @router.get("/{sale_id}")
 def get_sale(
         sale_id: int,
-        db: Session = Depends(get_db)
+        db: Session = Depends(get_db),
+        current_user = Depends(require_role(1,2,3,4))
     ):
 
     return get_sale_by_id(db, sale_id)

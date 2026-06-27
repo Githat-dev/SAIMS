@@ -4,7 +4,7 @@ from typing import Optional
 class UserCreate(BaseModel):
     username: str
     email: str
-    password_hash: str
+    password: str
     role_id: int
 
 class UserUpdate(BaseModel):

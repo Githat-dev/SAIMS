@@ -16,3 +16,6 @@ def create_audit_log(
     db.refresh(log)
 
     return log
+
+def get_all_audit_logs(db):
+    return db.query(AuditLog).all()

@@ -1,5 +1,7 @@
 from app.models.users import User
 from app.services.audit_service import create_audit_log
+from app.core.security import hash_password
+from app.services.notification_service import create_notification
 
 def get_all_users(db):
     users = db.query(User).all()
@@ -34,13 +36,21 @@ def create_user(db, user_data):
     user = User(
         username=user_data.username,
         email=user_data.email,
-        password_hash=user_data.password_hash,
+        password_hash=hash_password(user_data.password),
         role_id=user_data.role_id
     )
 
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    create_notification(
+        db=db,
+        #TODO : Replace with dynamic Superadmin lookup
+        user_id=1,
+        title="New User Created",
+        message=f"User '{user.username}' was created successfully."
+    )
 
     create_audit_log(
         db,

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
+from app.core.rbac import require_role
 from app.models.product import Product
 
 router = APIRouter(
@@ -9,7 +10,10 @@ router = APIRouter(
 )
 
 @router.post("/")
-def get_low_stock_prdouct(db: Session = Depends(get_db)):
+def get_low_stock_prdouct(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2))    
+):
     products = db.query(Product).all()
     low_stock_products = []
 
@@ -27,7 +31,10 @@ def get_low_stock_prdouct(db: Session = Depends(get_db)):
     return low_stock_products
 
 @router.get("/summary")
-def inventory_summary(db: Session = Depends(get_db)):
+def inventory_summary(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2))    
+):
 
     products = db.query(Product).all()
     total_products = len(products)
@@ -50,7 +57,8 @@ def inventory_summary(db: Session = Depends(get_db)):
 @router.get("/search")
 def search_products(
     q: str = Query(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2,3,4))
 ):
     products = db.query(Product).all()
     results = []
@@ -68,7 +76,10 @@ def search_products(
     return results
 
 @router.get("/report")
-def inventory_report(db: Session = Depends(get_db)):
+def inventory_report(
+    db: Session = Depends(get_db),
+    current_user = Depends(require_role(1,2))    
+):
 
     products = db.query(Product).all()
 

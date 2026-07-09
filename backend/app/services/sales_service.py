@@ -1,6 +1,8 @@
+from fastapi import HTTPException
 from app.models.sale import Sale
 from app.models.sale_item import SaleItem
 from app.models.product import Product
+from app.services.notification_service import create_notification
 
 def create_sale(db, sale_data):
     total_amount = 0
@@ -20,16 +22,37 @@ def create_sale(db, sale_data):
         ).first()
 
         if not product:
-            return {"error": "Product not found"}
+            raise HTTPException(
+                status_code=404,
+                detail="Product not found"
+            )
         
         if product.quantity < item.quantity:
-            return {"error": "Insufficient stock"}
+            raise HTTPException(
+                status_code=400,
+                detail="Insufficient stock"
+            )
         
         subtotal = product.price * item.quantity
 
         total_amount += subtotal
         
         product.quantity -= item.quantity
+
+        if product.quantity == 0:
+            
+            create_notification(
+                db=db,
+                user_id=1,
+                title="Out of stock",
+                message=f"{product.name} is now out of stock."
+            )
+            create_notification(
+                db=db,
+                user_id=2,
+                title="Out of stock",
+                message=f"{product.name} is now out of stock."
+            )
 
         sale_item = SaleItem(
             sale_id=sale.id,
@@ -46,6 +69,24 @@ def create_sale(db, sale_data):
     db.commit()
 
     db.refresh(sale)
+
+    HIGH_VALUE_SALE = 3000
+
+    if sale.total_amount >= HIGH_VALUE_SALE:
+        
+        create_notification(
+            db=db,
+            user_id=1,
+            title="High Value Sale",
+            message=f"A high-value sale of \u20A6{sale.total_amount:,.2f} has been recorded."
+        )
+
+        create_notification(
+            db=db,
+            user_id=2,
+            title="High Value Sale",
+            message=f"A high-value sale of \u20A6{sale.total_amount:,.2f} has been recorded."
+        )
 
     return sale
 

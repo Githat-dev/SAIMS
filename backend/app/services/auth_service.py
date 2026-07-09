@@ -29,7 +29,11 @@ def authenticate_user(db, username, password):
     print("ROLE:", user.role_id)
     
     token = create_access_token(
-        data={"sub": user.username, "role_id": user.role_id}
+        data={
+            "sub": user.username,
+            "role_id": user.role_id,
+            "user_id": user.id
+        }
     )
 
     print ("TOKEN:", token)

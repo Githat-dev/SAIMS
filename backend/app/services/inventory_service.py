@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.models.product import Product
+from app.services.notification_service import create_notification
 
 def get_inventory_summary(db: Session):
     total_products = db.query(Product).count()
@@ -30,6 +31,28 @@ def generate_inventory_report(db: Session):
     )
 
 def check_low_stock(db: Session):
-    return (
-        db.query(Product).filter(Product.quantity <= Product.low_stock_threshold).all()
+    low_stock_products = (
+        db.query(Product).filter(
+            Product.quantity <= Product.low_stock_threshold
+        ).all()
     )
+
+    for product in low_stock_products:
+
+        # Notify Superadmin
+        create_notification(
+            db=db,
+            user_id=1,
+            title="Low Stock Alert",
+            message=f"'{product.name}' is running low ({product.quantity} remaining)."
+        )
+
+        # Notify Manager
+        create_notification(
+            db=db,
+            user_id=2,
+            title="Low Stock Alert",
+            message=f"'{product.name}' is running low ({product.quantity} remaining)."
+        )
+
+    return low_stock_products

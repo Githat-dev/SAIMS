@@ -6,3 +6,4 @@ from app.models.stock_movement import StockMovement
 from app.models.sale import Sale
 from app.models.sale_item import SaleItem
 from app.models.notifications import Notification
+from app.models.settings import Settings

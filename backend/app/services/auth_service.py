@@ -1,8 +1,24 @@
+from fastapi import HTTPException
 from app.core.security import hash_password, verify_password
 from app.models.users import User
 from app.core.jwt import create_access_token
 
 def register_user(db, username, email, password, role_id):
+
+    existing_email = db.query(User).filter(User.email == email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=409,
+            detail="Email already exists."
+        )
+    
+    existing_username = db.query(User).filter(User.username == username).first()
+    if existing_username:
+        raise HTTPException(
+            status_code=409,
+            detail="Username already exists."
+        )
+
     user = User(
         username=username,
         email=email,

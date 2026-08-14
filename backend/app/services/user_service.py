@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from app.models.users import User
 from app.services.audit_service import create_audit_log
 from app.core.security import hash_password
@@ -21,7 +22,10 @@ def get_user_by_id(db, user_id: int):
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
-        return None
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
     
     return {
         "id": user.id,

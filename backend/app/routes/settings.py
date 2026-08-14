@@ -50,3 +50,13 @@ def uplaod_logo(
 
     with open(filepath, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+        
+    settings.business_logo = str(filepath)
+
+    db.commit()
+    db.refresh(settings)
+
+    return {
+        "message": "Business logo uploaded successfully.",
+        "logo_path": settings.business_logo
+    }
